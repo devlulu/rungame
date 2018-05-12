@@ -1,29 +1,28 @@
 #pragma once
 #include "cocos2d.h"
-#define TAG_SPRITE_WALL 1
-#define BLOCK_PATTERN 12
 using namespace cocos2d;
-
-#define DOWNSPEED 6.5f
 
 class BackgroundLayer : public cocos2d::LayerColor
 {
 public:
-	static cocos2d::Scene* createScene();
 	CREATE_FUNC(BackgroundLayer);
-	void initBackground();	
-	void initPattern();
-	void CreateBlock(Sprite** Left, Sprite** Right);
-	void update(float delta);
-	bool CheckPattern(int pattern);
-		
+	void initBackground();
+
 private:
 	virtual bool init() override;
+	
+	void CreateWall(Sprite** Left, Sprite** Right);
+	bool CheckWallPattern(short pattern);
+	void initWallPattern();
+	void UpdateWall(float dt);
+
 	typedef struct PATTERN {
 		std::vector <int> p;
 	}PATTERN;
-
-	Size winSize;	
-	int LastPattern;
 	PATTERN PossiblePattern[7];
+
+	Size winSize;
+	short LastPattern;
+	float DownSpeed;
+	float BlockTimer;
 };

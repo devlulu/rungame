@@ -1,83 +1,111 @@
 #include "BackgroundLayer.h"
-using namespace cocos2d;
+#include "MyBodyParser.h"
 
-Scene* BackgroundLayer::createScene()
+bool BackgroundLayer::init()
 {
-	auto scene = Scene::create();
-	auto layer = BackgroundLayer::create();
-	scene->addChild(layer);
-	return scene;
+	if (!LayerColor::initWithColor(Color4B(255, 255, 255, 255))) {
+		return false;
+	}
+
+	winSize = Director::getInstance()->getVisibleSize();
+	DownSpeed = winSize.height * 0.015;
+	BlockTimer = DownSpeed * 0.39;
+	LastPattern = 1;
+
+	initBackground();
+	initWallPattern();
+	this->schedule(schedule_selector(BackgroundLayer::UpdateWall), BlockTimer);
+
+	return true;
 }
 
 /*
-	ë°°ê²½í™”ë©´ ì¶”ê°€
+º®»ı¼º ½ºÄÉÁì·¯
 */
-void BackgroundLayer::initBackground()
+void BackgroundLayer::UpdateWall(float dt)
 {
-	auto bgLayer = Layer::create();
-	this->addChild(bgLayer);
+	Sprite *LeftWall = NULL;
+	Sprite *RightWall = NULL;
 
-	//ë ˆì´ì–´ì— ë°°ê²½ ì¶”ê°€ 
-	auto bgSprite = Sprite::create("b2.png");
-	bgSprite->setAnchorPoint(Point::ZERO);
-	bgSprite->setPosition(Point::ZERO);
-	bgSprite->setScaleX(winSize.width / bgSprite->getContentSize().width);
-	bgSprite->setScaleY(winSize.height / bgSprite->getContentSize().height);
-	bgLayer->addChild(bgSprite);
-	
-	auto bgSprite2 = Sprite::create("b2.png", Rect(0, 0, winSize.width, winSize.height));
-	bgSprite2->setAnchorPoint(Point::ZERO);
-	bgSprite2->setPosition(Point(0, winSize.height));
-	bgSprite2->setScaleX(winSize.width / bgSprite->getContentSize().width);
-	bgSprite2->setScaleY(winSize.height / bgSprite->getContentSize().height);
-	bgLayer->addChild(bgSprite2);
-	
-	//ë ˆì´ì–´ ì•¡ì…˜ ì¶”ê°€
-	auto action = Sequence::create(
-		MoveBy::create(10.0f, Point(0, -winSize.height)),
-		Place::create(Point::ZERO),
-		NULL
-	);
-	auto repeataction = RepeatForever::create(action);
+	//º® »ı¼º(+ÆĞÅÏ°Ë»ç)
+	CreateWall(&LeftWall, &RightWall);
 
-	bgLayer->runAction(repeataction);
+	/*
+	¿ŞÂÊ º® ¼³Á¤
+	*/
+	this->addChild(LeftWall);
+	//¿ŞÂÊ º® ¾×¼Ç
+	auto LeftAction1 = MoveTo::create(DownSpeed, Point(winSize.width / 2, -winSize.height));
+	auto LeftAction2 = RemoveSelf::create();
+	auto LeftAction3 = Sequence::create(LeftAction1, LeftAction2, nullptr);
+	LeftWall->runAction(LeftAction3);
+
+	/*
+	¿À¸¥ÂÊ º® ¼³Á¤
+	*/
+	if (RightWall != NULL) {
+		this->addChild(RightWall);
+
+		//¿À¸¥ÂÊ º® ¾×¼Ç
+		auto RightAction1 = MoveTo::create(DownSpeed, Point(winSize.width / 2, -winSize.height));
+		auto RightAction2 = RemoveSelf::create();
+		auto RightAction3 = Sequence::create(RightAction1, RightAction2, nullptr);
+		RightWall->runAction(RightAction3);
+	}
 }
 
-
-void BackgroundLayer::CreateBlock(Sprite** Left, Sprite** Right)
+/*
+	½ºÇÁ¶óÀÌÆ® º® »ı¼º ÈÄ
+	Æ÷ÀÎÅÍ ¸Å°³º¯¼ö ÀúÀå
+*/
+void BackgroundLayer::CreateWall(Sprite ** Left, Sprite ** Right)
 {
-	//ë‚œìˆ˜í•¨ìˆ˜ë¡œ íŒ¨í„´ ê²°ì •	
+	//³­¼öÇÔ¼ö·Î ÆĞÅÏ °áÁ¤	
 	char LeftPath[100] = { 0, };
 	char RightPath[100] = { 0, };
 	int pattern = 0;
 
+	//ÇöÀç ÆĞÅÏÀÌ ¸¸Á·ÇÒ ¶§±îÁö ¹«ÇÑ ·çÇÁ
 	do {
 		pattern = rand() % 5 + 1;
-		log("pattern : %d", pattern);
-	} while (CheckPattern(pattern) == false);
+	} while (CheckWallPattern(pattern) == false);
 
+	//ÀÌ¹ÌÁö °æ·Î ºÒ·¯¿À±â
 	sprintf(LeftPath, "%s%d.png", "wall/left/", pattern);
 	sprintf(RightPath, "%s%d.png", "wall/right/", pattern);
 
+	//¿ŞÂÊ º® ¼³Á¤
 	*Left = Sprite::create(LeftPath);
-	//(*Left)->setScale(0.5f);
-	(*Left)->setAnchorPoint(Point(0, 0.5));
-	(*Left)->setPosition(0, winSize.height / 2);
+	(*Left)->setPosition(winSize.width / 2, winSize.height * 1.5);
 
+	/*
+		¹°¸®¿£Áø Å×½ºÆ®
+	*/
+	char jsonPath[100] = { 0, };
+	sprintf(jsonPath, "wall/left/%d.json", pattern);
+	MyBodyParser::getInstance()->parseJsonFile(jsonPath);
+	auto body = MyBodyParser::getInstance()->bodyFormJson((*Left), "name");
+	if (body != nullptr) {
+		body->setCategoryBitmask(0x04);    // 0100
+		body->setContactTestBitmask(0x01); // 0001
+		body->setCollisionBitmask(0x06);   // 0110
+		(*Left)->setPhysicsBody(body);
+	}
+
+	//¿À¸¥ÂÊ º® ¼³Á¤
 	if (pattern != 1) {
 		*Right = Sprite::create(RightPath);
-		//(*Right)->setScale(0.5f);
-		(*Right)->setAnchorPoint(Point(1, 0.5));
-		(*Right)->setPosition(winSize.width, winSize.height / 2);
-	}	
+		(*Right)->setPosition(winSize.width/2, winSize.height * 1.5);
+	}
 
 	LastPattern = pattern;
 }
 
 /*
-	íŒ¨í„´ ê²€ì‚¬
+	ÆĞÅÏ °Ë»ç
+	ÆĞÅÏÀ» ¸¸Á·ÇÏÁö ¾ÊÀ¸¸é(´ÙÀ½ ÆĞÅÏÀ» »ı¼ºÇÒ ¼ö ¾øÀ¸¸é) false¸®ÅÏ
 */
-bool BackgroundLayer::CheckPattern(int pattern)
+bool BackgroundLayer::CheckWallPattern(short pattern)
 {
 	std::vector<int>::iterator end = PossiblePattern[LastPattern].p.end();
 	std::vector<int>::iterator begin = PossiblePattern[LastPattern].p.begin();
@@ -85,18 +113,18 @@ bool BackgroundLayer::CheckPattern(int pattern)
 	for (std::vector<int>::iterator iterPos = begin; iterPos != end; ++iterPos) {
 		if (*iterPos == pattern)
 			return true;
-	}	
+	}
 
 	return false;
 }
 
-void BackgroundLayer::initPattern()
+void BackgroundLayer::initWallPattern()
 {
-	//1ë²ˆ ë¸”ë¡ íŒ¨í„´
-	for(int i=1; i<=6; i++)
+	//1¹ø ºí·Ï ÆĞÅÏ
+	for (int i = 1; i <= 6; i++)
 		PossiblePattern[1].p.push_back(i);
-	
-	//2ë²ˆ ë¸”ë¡ íŒ¨í„´
+
+	//2¹ø ºí·Ï ÆĞÅÏ
 	for (int i = 1; i <= 6; i++)
 	{
 		if (i == 3 || i == 4 || i == 5)
@@ -104,7 +132,7 @@ void BackgroundLayer::initPattern()
 		PossiblePattern[2].p.push_back(i);
 	}
 
-	//3ë²ˆ ë¸”ë¡ íŒ¨í„´
+	//3¹ø ºí·Ï ÆĞÅÏ
 	for (int i = 1; i <= 6; i++)
 	{
 		if (i == 2 || i == 6)
@@ -112,15 +140,15 @@ void BackgroundLayer::initPattern()
 		PossiblePattern[3].p.push_back(i);
 	}
 
-	//4ë²ˆ ë¸”ë¡ íŒ¨í„´
+	//4¹ø ºí·Ï ÆĞÅÏ
 	for (int i = 1; i <= 6; i++)
 	{
 		if (i == 5)
 			continue;
 		PossiblePattern[4].p.push_back(i);
 	}
-	
-	//5ë²ˆ ë¸”ë¡ íŒ¨í„´
+
+	//5¹ø ºí·Ï ÆĞÅÏ
 	for (int i = 1; i <= 6; i++)
 	{
 		if (i == 3 || i == 5)
@@ -128,7 +156,7 @@ void BackgroundLayer::initPattern()
 		PossiblePattern[5].p.push_back(i);
 	}
 
-	//6ë²ˆ ë¸”ë¡ íŒ¨í„´
+	//6¹ø ºí·Ï ÆĞÅÏ
 	for (int i = 1; i <= 6; i++)
 	{
 		if (i == 2 || i == 6)
@@ -137,44 +165,34 @@ void BackgroundLayer::initPattern()
 	}
 }
 
-void BackgroundLayer::update(float delta)
+/*
+	¹è°æÈ­¸é ÃÊ±âÈ­
+*/
+void BackgroundLayer::initBackground()
 {
-	Sprite *LeftWall = NULL;
-	Sprite *RightWall = NULL;
-	auto Layer1 = Layer::create();
-	Layer1->setAnchorPoint(Point(0.5, 0.5));
-	Layer1->setPositionY(winSize.height);
-	this->addChild(Layer1);
+	auto bgLayer = Layer::create();
+	this->addChild(bgLayer);
 
-	CreateBlock(&LeftWall, &RightWall);
-	Layer1->addChild(LeftWall);
-	if (RightWall != NULL)	Layer1->addChild(RightWall);
+	//·¹ÀÌ¾î¿¡ ¹è°æ Ãß°¡ 
+	auto bgSprite = Sprite::create("bg.png");
+	bgSprite->setPosition(Point(winSize.width/2, winSize.height/2));
+	bgSprite->setScaleX(winSize.width / bgSprite->getContentSize().width);
+	bgSprite->setScaleY(winSize.height / bgSprite->getContentSize().height);
+	bgLayer->addChild(bgSprite);
 
+	auto bgSprite2 = Sprite::create("bg.png");
+	bgSprite2->setPosition(Point(winSize.width / 2, winSize.height ));
+	bgSprite2->setScaleX(winSize.width / bgSprite->getContentSize().width);
+	bgSprite2->setScaleY(winSize.height / bgSprite->getContentSize().height);
+	bgLayer->addChild(bgSprite2);
+
+	//·¹ÀÌ¾î ¾×¼Ç Ãß°¡
 	auto action = Sequence::create(
-		MoveTo::create(DOWNSPEED, Point(0, -winSize.height * 1.2)),
-		RemoveSelf::create(),
+		MoveBy::create(10.0f, Point(0, -winSize.height)),
+		Place::create(Point::ZERO),
 		NULL
 	);
+	auto repeataction = RepeatForever::create(action);
 
-	Layer1->runAction(action);
-}
-
-
-bool BackgroundLayer::init()
-{
-	if (!LayerColor::initWithColor(Color4B(255,255,255,255))) {
-		return false;
-	}
-
-	LastPattern = 1;
-	srand(time(NULL));
-	//Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	winSize = Director::getInstance()->getVisibleSize();	
-
-	initPattern();
-	initBackground();	
-	float scheduleSpeed = DOWNSPEED * 0.3;		
-	this->schedule(schedule_selector(BackgroundLayer::update), scheduleSpeed);
-
-	return true; 
+	bgLayer->runAction(repeataction);
 }
