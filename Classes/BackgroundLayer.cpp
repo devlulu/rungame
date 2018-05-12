@@ -3,7 +3,7 @@
 
 bool BackgroundLayer::init()
 {
-	if (!LayerColor::initWithColor(Color4B(255, 255, 255, 255))) {
+	if (!Layer::init()) {
 		return false;
 	}
 
@@ -76,6 +76,8 @@ void BackgroundLayer::CreateWall(Sprite ** Left, Sprite ** Right)
 
 	//왼쪽 벽 설정
 	*Left = Sprite::create(LeftPath);
+	(*Left)->setScaleX(winSize.width / (*Left)->getContentSize().width);
+	(*Left)->setScaleY(winSize.height / (*Left)->getContentSize().height);
 	(*Left)->setPosition(winSize.width / 2, winSize.height * 1.5);
 
 	/*
@@ -96,6 +98,8 @@ void BackgroundLayer::CreateWall(Sprite ** Left, Sprite ** Right)
 	if (pattern != 1) {
 		*Right = Sprite::create(RightPath);
 		(*Right)->setPosition(winSize.width/2, winSize.height * 1.5);
+		(*Right)->setScaleX(winSize.width / (*Right)->getContentSize().width);
+		(*Right)->setScaleY(winSize.height / (*Right)->getContentSize().height);
 	}
 
 	LastPattern = pattern;
@@ -188,7 +192,7 @@ void BackgroundLayer::initBackground()
 
 	//레이어 액션 추가
 	auto action = Sequence::create(
-		MoveBy::create(10.0f, Point(0, -winSize.height)),
+		MoveBy::create(10.0f, Point(0, -bgSprite->getContentSize().height)),
 		Place::create(Point::ZERO),
 		NULL
 	);

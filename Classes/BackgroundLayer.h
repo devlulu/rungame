@@ -2,15 +2,15 @@
 #include "cocos2d.h"
 using namespace cocos2d;
 
-class BackgroundLayer : public cocos2d::LayerColor
+class BackgroundLayer : public cocos2d::Layer
 {
 public:
 	CREATE_FUNC(BackgroundLayer);
-	void initBackground();
 
 private:
 	virtual bool init() override;
-	
+	void initBackground();
+
 	void CreateWall(Sprite** Left, Sprite** Right);
 	bool CheckWallPattern(short pattern);
 	void initWallPattern();

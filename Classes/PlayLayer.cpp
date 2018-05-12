@@ -39,7 +39,7 @@ void PlayLayer::initPlayer() {
 	if (body != nullptr) {
 		body->setCategoryBitmask(0x01);    // 0001
 		body->setContactTestBitmask(0x04); // 0100
-		body->setCollisionBitmask(0x03);   // 0011
+		body->setCollisionBitmask(0x03);   // 0011		
 		Player->setPhysicsBody(body);
 	}
 

@@ -8,7 +8,7 @@ cocos2d::Scene * PlayScene::createScene()
 	//물리엔진 씬 추가
 	auto scene = Scene::createWithPhysics();
 	scene->getPhysicsWorld()->setGravity(Vec2(0.0f, 0.0f));
-	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+	//scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
 	//물리엔진 레이어 추가
 	auto layer = PlayScene::create();
@@ -45,7 +45,7 @@ bool PlayScene::onContactBegin(PhysicsContact & contact)
 {
 	//auto sp1 = (Sprite*)contact.getShapeA()->getBody()->getNode();
 	//auto sp2 = (Sprite*)contact.getShapeB()->getBody()->getNode();
-	MessageBox("", "");
+	//MessageBox("", "");
 
 	return true;
 }
