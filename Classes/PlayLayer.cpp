@@ -52,9 +52,10 @@ bool PlayLayer::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event) {
 	if (currentAction)
 		Player->stopAction(currentAction);
 
-	auto action1 = RotateTo::create(0.5, -90);
+	auto action1 = RotateTo::create(0.4, -90);
 	auto action2 = MoveTo::create(MOVESPEED, Point(0 , visibleSize.height / 2));
-	auto spawn1 = Spawn::create(action1, action2, NULL);
+	auto action3 = EaseIn::create(action2, 1.5);
+	auto spawn1 = Spawn::create(action1, action2, action3, NULL);
 	currentAction = Player->runAction(spawn1);
 
 	return true;
@@ -68,9 +69,10 @@ void PlayLayer::onTouchEnded(Touch* touch, Event* event) {
 	if (currentAction)
 		Player->stopAction(currentAction);
 
-	auto action1 = RotateTo::create(0.5, 0);
+	auto action1 = RotateTo::create(0.4, 0);
 	auto action2 = MoveTo::create(MOVESPEED, Point(visibleSize.width, visibleSize.height / 2));
-	auto spawn2 = Spawn::create(action1, action2, NULL);
+	auto action3 = EaseIn::create(action2, 1.5);
+	auto spawn2 = Spawn::create(action1, action2, action3, NULL);
 	currentAction = Player->runAction(spawn2);
 }
 

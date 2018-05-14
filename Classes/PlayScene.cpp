@@ -43,9 +43,9 @@ bool PlayScene::init()
 */
 bool PlayScene::onContactBegin(PhysicsContact & contact)
 {
-	//auto sp1 = (Sprite*)contact.getShapeA()->getBody()->getNode();
-	//auto sp2 = (Sprite*)contact.getShapeB()->getBody()->getNode();
-	//MessageBox("", "");
+	auto sp1 = (Sprite*)contact.getShapeA()->getBody()->getNode();
+	auto sp2 = (Sprite*)contact.getShapeB()->getBody()->getNode();
+	MessageBox("", "");
 
 	return true;
 }

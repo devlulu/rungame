@@ -100,7 +100,18 @@ void BackgroundLayer::CreateWall(Sprite ** Left, Sprite ** Right)
 		(*Right)->setPosition(winSize.width/2, winSize.height * 1.5);
 		(*Right)->setScaleX(winSize.width / (*Right)->getContentSize().width);
 		(*Right)->setScaleY(winSize.height / (*Right)->getContentSize().height);
+
+		//sprintf(jsonPath, "wall/right/%d.json", pattern);
+		//MyBodyParser::getInstance()->parseJsonFile(jsonPath);
+		//body = MyBodyParser::getInstance()->bodyFormJson((*Right), "name");
+		//if (body != nullptr) {
+		//	body->setCategoryBitmask(0x04);    // 0100
+		//	body->setContactTestBitmask(0x01); // 0001
+		//	body->setCollisionBitmask(0x06);   // 0110
+		//	(*Right)->setPhysicsBody(body);
+		//}
 	}
+
 
 	LastPattern = pattern;
 }
