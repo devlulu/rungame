@@ -30,7 +30,7 @@ private:
 	void timeTick(float t);
 	int score = 0;
 	bool scoreFlag = false;
-	LabelTTF *timeScore;
+	Label *timeScore;
 
 
 	Size winSize;

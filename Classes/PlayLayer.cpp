@@ -22,6 +22,8 @@ bool PlayLayer::init()
 	return true;
 }
 
+
+
 void PlayLayer::initPlayer() {
 
 	Point center = Point(240, 160);
@@ -55,7 +57,7 @@ void PlayLayer::initTimer() {
 	timerBackground->setScale(visibleSize.height /visibleSize.width);
 	this->addChild(timerBackground, 3);
 
-	timeScore = LabelTTF::create("0", "Arial", (visibleSize.height / visibleSize.width)*50);
+	timeScore = Label::createWithSystemFont("0", "Arial", (visibleSize.height / visibleSize.width) * 50, Size(visibleSize.width, 300), TextHAlignment::CENTER, TextVAlignment::CENTER);
 	timeScore->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - visibleSize.height/5));
 	timeScore->setColor(Color3B(0,0,0));
 	this->addChild(timeScore, 4);
@@ -63,9 +65,10 @@ void PlayLayer::initTimer() {
 }
 
 void PlayLayer::timeTick(float t) {
-	timeScore->setString(std::to_string(++score));
+	char strScore[100] = "";
+	sprintf(strScore, "%d", ++score);
+	timeScore->setString(strScore);
 }
-
 
 bool PlayLayer::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event) {
 
