@@ -25,5 +25,13 @@ private:
 	Action* currentAction = nullptr;
 
 	void initPlayer();
+
+	void initTimer();
+	void timeTick(float t);
+	int score = 0;
+	bool scoreFlag = false;
+	LabelTTF *timeScore;
+
+
 	Size winSize;
 };

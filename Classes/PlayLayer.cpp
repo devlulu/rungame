@@ -9,6 +9,7 @@ bool PlayLayer::init()
 		return false;
 
 	initPlayer();
+	initTimer();
 
 	// initalize Touch events
 	auto listener = EventListenerTouchOneByOne::create();
@@ -46,6 +47,25 @@ void PlayLayer::initPlayer() {
 	this->addChild(Player, 1);
 }
 
+void PlayLayer::initTimer() {
+
+	Sprite *timerBackground = Sprite::create("timerBG.png");
+	timerBackground->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - visibleSize.height / 5));
+	timerBackground->setOpacity(60);
+	timerBackground->setScale(visibleSize.height /visibleSize.width);
+	this->addChild(timerBackground, 3);
+
+	timeScore = LabelTTF::create("0", "Arial", (visibleSize.height / visibleSize.width)*50);
+	timeScore->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - visibleSize.height/5));
+	timeScore->setColor(Color3B(0,0,0));
+	this->addChild(timeScore, 4);
+
+}
+
+void PlayLayer::timeTick(float t) {
+	timeScore->setString(std::to_string(++score));
+}
+
 
 bool PlayLayer::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event) {
 
@@ -57,6 +77,11 @@ bool PlayLayer::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event) {
 	auto action3 = EaseIn::create(action2, 1.5);
 	auto spawn1 = Spawn::create(action1, action2, action3, NULL);
 	currentAction = Player->runAction(spawn1);
+
+	if (!scoreFlag) {
+		scoreFlag = true;
+		this->schedule(schedule_selector(PlayLayer::timeTick), 0.1);
+	}
 
 	return true;
 }
