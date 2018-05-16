@@ -1,7 +1,4 @@
 #include "PlayLayer.h"
-#include "MyBodyParser.h"
-#include <time.h>
-#include <stdlib.h>
 
 bool PlayLayer::init()
 {
@@ -67,6 +64,8 @@ void PlayLayer::initTimer() {
 void PlayLayer::timeTick(float t) {
 	char strScore[100] = "";
 	sprintf(strScore, "%d", ++score);
+	DataManager *dataManager = DataManager::getInstance();
+	dataManager->setScore(score);
 	timeScore->setString(strScore);
 }
 

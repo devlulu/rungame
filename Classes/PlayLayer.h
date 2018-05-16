@@ -1,7 +1,11 @@
-#pragma once
 #include "cocos2d.h"
+#include <time.h>
+#include <stdlib.h>
+#include "MyBodyParser.h"
+#include "DataManager.h"
 USING_NS_CC;
 
+#pragma once
 #define TAG_SPRITE_PLAYER		1000
 #define MOVESPEED	3
 class PlayLayer : public cocos2d::Layer

@@ -2,6 +2,7 @@
 #include "BackgroundLayer.h"
 #include "MyBodyParser.h"
 #include "PlayLayer.h"
+#include "GameoverScene.h"
 
 cocos2d::Scene * PlayScene::createScene()
 {
@@ -46,6 +47,10 @@ bool PlayScene::onContactBegin(PhysicsContact & contact)
 	auto sp1 = (Sprite*)contact.getShapeA()->getBody()->getNode();
 	auto sp2 = (Sprite*)contact.getShapeB()->getBody()->getNode();
 	//MessageBox("", "");
+
+	Scene *pScene = GameoverScene::createScene();
+	Director::getInstance()->replaceScene(pScene);
+
 
 	return true;
 }
