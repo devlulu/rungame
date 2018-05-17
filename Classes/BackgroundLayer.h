@@ -7,6 +7,9 @@ class BackgroundLayer : public cocos2d::Layer
 public:
 	CREATE_FUNC(BackgroundLayer);
 
+	Sprite *intersectWallLeft;
+	Sprite *intersectWallRight;
+
 private:
 	virtual bool init() override;
 	void initBackground();

@@ -51,6 +51,16 @@ void BackgroundLayer::UpdateWall(float dt)
 		auto RightAction2 = RemoveSelf::create();
 		auto RightAction3 = Sequence::create(RightAction1, RightAction2, nullptr);
 		RightWall->runAction(RightAction3);
+
+		//sprintf(jsonPath, "wall/right/%d.json", pattern);
+		//MyBodyParser::getInstance()->parseJsonFile(jsonPath);
+		//body = MyBodyParser::getInstance()->bodyFormJson((*Right), "name");
+		//if (body != nullptr) {
+		//	body->setCategoryBitmask(0x04);    // 0100
+		//	body->setContactTestBitmask(0x01); // 0001
+		//	body->setCollisionBitmask(0x06);   // 0110
+		//	(*Right)->setPhysicsBody(body);
+		//}
 	}
 }
 
@@ -81,7 +91,7 @@ void BackgroundLayer::CreateWall(Sprite ** Left, Sprite ** Right)
 	(*Left)->setPosition(winSize.width / 2, winSize.height * 1.5);
 
 	/*
-		물리엔진 테스트
+	물리엔진 테스트
 	*/
 	char jsonPath[100] = { 0, };
 	sprintf(jsonPath, "wall/left/%d.json", pattern);
@@ -90,26 +100,26 @@ void BackgroundLayer::CreateWall(Sprite ** Left, Sprite ** Right)
 	if (body != nullptr) {
 		body->setCategoryBitmask(0x04);    // 0100
 		body->setContactTestBitmask(0x01); // 0001
-		body->setCollisionBitmask(0x06);   // 0110
+		body->setCollisionBitmask(0x02);   // 0010
 		(*Left)->setPhysicsBody(body);
 	}
 
 	//오른쪽 벽 설정
 	if (pattern != 1) {
 		*Right = Sprite::create(RightPath);
-		(*Right)->setPosition(winSize.width/2, winSize.height * 1.5);
+		(*Right)->setPosition(winSize.width / 2, winSize.height * 1.5);
 		(*Right)->setScaleX(winSize.width / (*Right)->getContentSize().width);
 		(*Right)->setScaleY(winSize.height / (*Right)->getContentSize().height);
 
-		//sprintf(jsonPath, "wall/right/%d.json", pattern);
-		//MyBodyParser::getInstance()->parseJsonFile(jsonPath);
-		//body = MyBodyParser::getInstance()->bodyFormJson((*Right), "name");
-		//if (body != nullptr) {
-		//	body->setCategoryBitmask(0x04);    // 0100
-		//	body->setContactTestBitmask(0x01); // 0001
-		//	body->setCollisionBitmask(0x06);   // 0110
-		//	(*Right)->setPhysicsBody(body);
-		//}
+		sprintf(jsonPath, "wall/right/%d.json", pattern);
+		MyBodyParser::getInstance()->parseJsonFile(jsonPath);
+		body = MyBodyParser::getInstance()->bodyFormJson((*Right), "name");
+		if (body != nullptr) {
+			body->setCategoryBitmask(0x04);    // 0100
+			body->setContactTestBitmask(0x01); // 0001
+			body->setCollisionBitmask(0x02);   // 0010
+			(*Right)->setPhysicsBody(body);
+		}
 	}
 
 
@@ -210,4 +220,14 @@ void BackgroundLayer::initBackground()
 	auto repeataction = RepeatForever::create(action);
 
 	bgLayer->runAction(repeataction);
+
+
+	//벽 추가
+	intersectWallLeft = Sprite::create("wall/intersectWallLeft.png");
+	intersectWallLeft->setPosition(Vec2(-10, winSize.height / 2));
+	this->addChild(intersectWallLeft);
+
+	intersectWallRight = Sprite::create("wall/intersectWallRight.png");
+	intersectWallRight->setPosition(Vec2(winSize.width + 10, winSize.height / 2));
+	this->addChild(intersectWallRight);
 }

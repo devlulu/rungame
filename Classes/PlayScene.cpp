@@ -23,10 +23,10 @@ bool PlayScene::init()
 	if (!Scene::init())
 		return false;
 
-	auto bgLayer = BackgroundLayer::create();
+	bgLayer = BackgroundLayer::create();
 	this->addChild(bgLayer);
 
-	auto CharacterLayer = PlayLayer::create();
+	CharacterLayer = PlayLayer::create();
 	this->addChild(CharacterLayer);
 	
 	/*
@@ -35,6 +35,9 @@ bool PlayScene::init()
 	auto contactListener = EventListenerPhysicsContact::create();
 	contactListener->onContactBegin = CC_CALLBACK_1(PlayScene::onContactBegin, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
+
+	//scheduleUpdate() 메소드를 사용하여 Update() 메소드를 호출.
+	this->scheduleUpdate();
 
 	return true;	
 }
@@ -50,7 +53,28 @@ bool PlayScene::onContactBegin(PhysicsContact & contact)
 
 	Scene *pScene = GameoverScene::createScene();
 	Director::getInstance()->replaceScene(pScene);
-
-
 	return true;
+}
+
+void PlayScene::update(float dt)
+{
+	intersect();
+}
+
+void PlayScene::intersect()
+{
+	//auto sprPlayer = (Sprite*)this->getChildByTag(TAG_SPRITE_PLAYER);
+	Rect rectPlayer = CharacterLayer->Player->getBoundingBox();
+
+	Rect rectWall = bgLayer->intersectWallRight->getBoundingBox();
+	Rect rectWall2 = bgLayer->intersectWallLeft->getBoundingBox();
+
+	if (rectPlayer.intersectsRect(rectWall) || rectPlayer.intersectsRect(rectWall2))
+	{
+		//MessageBox("wall", "");
+		//CharacterLayer->CollisionCheck->setTexture(Director::getInstance()->getTextureCache()->addImage("Images/collision_On.png"));
+		Scene *pScene = GameoverScene::createScene();
+		Director::getInstance()->replaceScene(pScene);
+	}
+
 }

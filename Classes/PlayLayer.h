@@ -16,6 +16,8 @@ public:
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+	Sprite* Player;
+
 private:
 	virtual bool init() override;
 
@@ -25,7 +27,7 @@ private:
 	virtual void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
 	virtual void onTouchCancelled(cocos2d::Touch* touch, cocos2d::Event* event);
 
-	Sprite* Player;
+
 	Action* currentAction = nullptr;
 
 	void initPlayer();
