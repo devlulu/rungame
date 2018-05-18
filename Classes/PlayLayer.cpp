@@ -35,7 +35,7 @@ void PlayLayer::initPlayer() {
 	*/
 	
 	MyBodyParser::getInstance()->parseJsonFile("Images/arrow1.json");
-	auto body = MyBodyParser::getInstance()->bodyFormJson(Player, "name");
+	auto body = MyBodyParser::getInstance()->bodyFormJson(Player, "Name");
 	if (body != nullptr) {
 		body->setCategoryBitmask(0x01);    // 0001
 		body->setContactTestBitmask(0x04); // 0100

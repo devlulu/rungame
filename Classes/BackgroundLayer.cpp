@@ -51,16 +51,6 @@ void BackgroundLayer::UpdateWall(float dt)
 		auto RightAction2 = RemoveSelf::create();
 		auto RightAction3 = Sequence::create(RightAction1, RightAction2, nullptr);
 		RightWall->runAction(RightAction3);
-
-		//sprintf(jsonPath, "wall/right/%d.json", pattern);
-		//MyBodyParser::getInstance()->parseJsonFile(jsonPath);
-		//body = MyBodyParser::getInstance()->bodyFormJson((*Right), "name");
-		//if (body != nullptr) {
-		//	body->setCategoryBitmask(0x04);    // 0100
-		//	body->setContactTestBitmask(0x01); // 0001
-		//	body->setCollisionBitmask(0x06);   // 0110
-		//	(*Right)->setPhysicsBody(body);
-		//}
 	}
 }
 
@@ -96,11 +86,13 @@ void BackgroundLayer::CreateWall(Sprite ** Left, Sprite ** Right)
 	char jsonPath[100] = { 0, };
 	sprintf(jsonPath, "wall/left/%d.json", pattern);
 	MyBodyParser::getInstance()->parseJsonFile(jsonPath);
-	auto body = MyBodyParser::getInstance()->bodyFormJson((*Left), "name");
+	auto body = MyBodyParser::getInstance()->bodyFormJson((*Left), "Name");
 	if (body != nullptr) {
+		body->setDynamic(true);
+		body->setMass(100.0f);
 		body->setCategoryBitmask(0x04);    // 0100
 		body->setContactTestBitmask(0x01); // 0001
-		body->setCollisionBitmask(0x02);   // 0010
+		body->setCollisionBitmask(0x00);   // 0000
 		(*Left)->setPhysicsBody(body);
 	}
 
@@ -113,11 +105,13 @@ void BackgroundLayer::CreateWall(Sprite ** Left, Sprite ** Right)
 
 		sprintf(jsonPath, "wall/right/%d.json", pattern);
 		MyBodyParser::getInstance()->parseJsonFile(jsonPath);
-		body = MyBodyParser::getInstance()->bodyFormJson((*Right), "name");
+		body = MyBodyParser::getInstance()->bodyFormJson((*Right), "Name");
 		if (body != nullptr) {
+			body->setDynamic(true);
+			body->setMass(100.0f);
 			body->setCategoryBitmask(0x04);    // 0100
 			body->setContactTestBitmask(0x01); // 0001
-			body->setCollisionBitmask(0x02);   // 0010
+			body->setCollisionBitmask(0x00);   // 0000
 			(*Right)->setPhysicsBody(body);
 		}
 	}

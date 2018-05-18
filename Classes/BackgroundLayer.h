@@ -10,6 +10,9 @@ public:
 	Sprite *intersectWallLeft;
 	Sprite *intersectWallRight;
 
+	PhysicsWorld* m_world;
+	void setPhyWorld(PhysicsWorld* world) { m_world = world; }
+
 private:
 	virtual bool init() override;
 	void initBackground();

@@ -18,6 +18,9 @@ public:
 
 	Sprite* Player;
 
+	PhysicsWorld* m_world;
+	void setPhyWorld(PhysicsWorld* world) { m_world = world; }
+
 private:
 	virtual bool init() override;
 

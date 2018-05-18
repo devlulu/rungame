@@ -3,7 +3,7 @@
 #include "MyBodyParser.h"
 #include "PlayLayer.h"
 #include "GameoverScene.h"
-
+#include "HelloWorldScene.h"
 cocos2d::Scene * PlayScene::createScene()
 {
 	//물리엔진 씬 추가
@@ -15,6 +15,7 @@ cocos2d::Scene * PlayScene::createScene()
 	auto layer = PlayScene::create();
 	layer->SetPhysicsWorld(scene->getPhysicsWorld());
 	scene->addChild(layer);
+
 	return scene;
 }
 
@@ -23,10 +24,18 @@ bool PlayScene::init()
 	if (!Scene::init())
 		return false;
 
+	auto scene = Director::getInstance()->getRunningScene();
+	auto world = this->getPhysicsWorld();
+
+	//auto s = HelloWorld::create();
+	//this->addChild(s);
+
 	bgLayer = BackgroundLayer::create();
+	bgLayer->setPhyWorld(world);
 	this->addChild(bgLayer);
 
 	CharacterLayer = PlayLayer::create();
+	CharacterLayer->setPhyWorld(world);
 	this->addChild(CharacterLayer);
 	
 	/*

@@ -4,13 +4,13 @@
 //  Created by Jason Xu.
 //
 //
+
+#pragma once
+
 #include <string>
 #include "cocos2d.h"
 USING_NS_CC;
 #include "json/document.h"
-#pragma once
-
-
 
 class MyBodyParser {
     MyBodyParser(){}
@@ -20,5 +20,5 @@ public:
     bool parseJsonFile(const std::string& pFile);
     bool parse(unsigned char* buffer, long length);
     void clearCache();
-    PhysicsBody* bodyFormJson(Node* pNode, const std::string& name);
+    PhysicsBody* bodyFormJson(Node* pNode, const std::string& name, PhysicsMaterial material = PHYSICSBODY_MATERIAL_DEFAULT);
 };
