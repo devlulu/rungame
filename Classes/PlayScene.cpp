@@ -3,7 +3,7 @@
 #include "MyBodyParser.h"
 #include "PlayLayer.h"
 #include "GameoverScene.h"
-#include "HelloWorldScene.h"
+
 cocos2d::Scene * PlayScene::createScene()
 {
 	//물리엔진 씬 추가
@@ -27,9 +27,7 @@ bool PlayScene::init()
 	auto scene = Director::getInstance()->getRunningScene();
 	auto world = this->getPhysicsWorld();
 
-	//auto s = HelloWorld::create();
-	//this->addChild(s);
-
+	
 	bgLayer = BackgroundLayer::create();
 	bgLayer->setPhyWorld(world);
 	this->addChild(bgLayer);
@@ -80,10 +78,8 @@ void PlayScene::intersect()
 
 	if (rectPlayer.intersectsRect(rectWall) || rectPlayer.intersectsRect(rectWall2))
 	{
-		//MessageBox("wall", "");
 		//CharacterLayer->CollisionCheck->setTexture(Director::getInstance()->getTextureCache()->addImage("Images/collision_On.png"));
 		Scene *pScene = GameoverScene::createScene();
 		Director::getInstance()->replaceScene(pScene);
 	}
-
 }

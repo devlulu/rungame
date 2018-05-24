@@ -8,8 +8,10 @@ bool BackgroundLayer::init()
 	}
 
 	winSize = Director::getInstance()->getVisibleSize();
-	DownSpeed = winSize.height * 0.015;
-	BlockTimer = DownSpeed * 0.39;
+	/*DownSpeed = winSize.height * 0.015;
+	BlockTimer = DownSpeed * 0.39;*/
+	DownSpeed = 13.0;
+	BlockTimer = 5.0f;
 	LastPattern = 1;
 
 	initBackground();
@@ -75,10 +77,11 @@ void BackgroundLayer::CreateWall(Sprite ** Left, Sprite ** Right)
 	sprintf(RightPath, "%s%d.png", "wall/right/", pattern);
 
 	//왼쪽 벽 설정
-	*Left = Sprite::create(LeftPath);
-	(*Left)->setScaleX(winSize.width / (*Left)->getContentSize().width);
-	(*Left)->setScaleY(winSize.height / (*Left)->getContentSize().height);
+	SpriteFrameCache::getInstance()->addSpriteFrame(Sprite::create(LeftPath)->getDisplayFrame(), "left");
+	*Left = Sprite::createWithSpriteFrameName("left");
 	(*Left)->setPosition(winSize.width / 2, winSize.height * 1.5);
+	//(*Left)->setScaleX(winSize.width / (*Left)->getContentSize().width);
+	//(*Left)->setScaleY(winSize.height / (*Left)->getContentSize().height);
 
 	/*
 	물리엔진 테스트
@@ -98,14 +101,15 @@ void BackgroundLayer::CreateWall(Sprite ** Left, Sprite ** Right)
 
 	//오른쪽 벽 설정
 	if (pattern != 1) {
-		*Right = Sprite::create(RightPath);
+		SpriteFrameCache::getInstance()->addSpriteFrame(Sprite::create(RightPath)->getDisplayFrame(), "right");
+		*Right = Sprite::createWithSpriteFrameName("right");
 		(*Right)->setPosition(winSize.width / 2, winSize.height * 1.5);
-		(*Right)->setScaleX(winSize.width / (*Right)->getContentSize().width);
-		(*Right)->setScaleY(winSize.height / (*Right)->getContentSize().height);
+		//(*Right)->setScaleX(winSize.width / (*Right)->getContentSize().width);
+		//(*Right)->setScaleY(winSize.height / (*Right)->getContentSize().height);
 
 		sprintf(jsonPath, "wall/right/%d.json", pattern);
 		MyBodyParser::getInstance()->parseJsonFile(jsonPath);
-		body = MyBodyParser::getInstance()->bodyFormJson((*Right), "Name");
+		auto body = MyBodyParser::getInstance()->bodyFormJson((*Right), "Name");
 		if (body != nullptr) {
 			body->setDynamic(true);
 			body->setMass(100.0f);
@@ -189,32 +193,29 @@ void BackgroundLayer::initWallPattern()
 */
 void BackgroundLayer::initBackground()
 {
-	auto bgLayer = Layer::create();
-	this->addChild(bgLayer);
+	//배경 -> 고정
+	SpriteFrameCache::getInstance()->addSpriteFrame(Sprite::create("background/bg.png")->getDisplayFrame(), "bg"); 
+	auto bg = Sprite::createWithSpriteFrameName("bg");
+	bg->setAnchorPoint(Point::ZERO);
+	this->addChild(bg);
 
-	//레이어에 배경 추가 
-	auto bgSprite = Sprite::create("bg.png");
-	bgSprite->setPosition(Point(winSize.width/2, winSize.height/2));
-	bgSprite->setScaleX(winSize.width / bgSprite->getContentSize().width);
-	bgSprite->setScaleY(winSize.height / bgSprite->getContentSize().height);
-	bgLayer->addChild(bgSprite);
+	auto node = ParallaxNode::create();
+	this->addChild(node);
 
-	auto bgSprite2 = Sprite::create("bg.png");
-	bgSprite2->setPosition(Point(winSize.width / 2, winSize.height ));
-	bgSprite2->setScaleX(winSize.width / bgSprite->getContentSize().width);
-	bgSprite2->setScaleY(winSize.height / bgSprite->getContentSize().height);
-	bgLayer->addChild(bgSprite2);
+	auto action_1 = MoveBy::create(20.0f, Point(0, -1920));
+	auto action_2 = Place::create(Point::ZERO);
+	auto action_3 = Sequence::create(action_1, action_2, NULL);
+	auto action = RepeatForever::create(action_3);
+	node->runAction(action);
 
-	//레이어 액션 추가
-	auto action = Sequence::create(
-		MoveBy::create(10.0f, Point(0, -bgSprite->getContentSize().height)),
-		Place::create(Point::ZERO),
-		NULL
-	);
-	auto repeataction = RepeatForever::create(action);
+	// 눈꽃 ? 별인가? -> 패럴러스 노드로 움직임
+	auto bg_1 = Sprite::create("background/star.png");
+	bg_1->setAnchorPoint(Point::ZERO);
+	node->addChild(bg_1, 0, Point(0, 1), Point::ZERO);
 
-	bgLayer->runAction(repeataction);
-
+	/*auto bg_2 = Sprite::create("star.png", Rect(0,0,1080,1920));
+	bg_2->setAnchorPoint(Point::ZERO);
+	node->addChild(bg_2, 0, Point(0, 1), Point(0, 1920));*/
 
 	//벽 추가
 	intersectWallLeft = Sprite::create("wall/intersectWallLeft.png");
