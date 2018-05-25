@@ -73,18 +73,17 @@ void BackgroundLayer::CreateWall(Sprite ** Left, Sprite ** Right)
 	} while (CheckWallPattern(pattern) == false);
 
 	//이미지 경로 불러오기
-	sprintf(LeftPath, "%s%d.png", "wall/left/", pattern);
-	sprintf(RightPath, "%s%d.png", "wall/right/", pattern);
+	sprintf(LeftPath, "%s%d.png", "left_wall_", pattern);
+	sprintf(RightPath, "%s%d.png", "right_wall_", pattern);
 
 	//왼쪽 벽 설정
-	SpriteFrameCache::getInstance()->addSpriteFrame(Sprite::create(LeftPath)->getDisplayFrame(), "left");
-	*Left = Sprite::createWithSpriteFrameName("left");
+	*Left = Sprite::createWithSpriteFrameName(LeftPath);
 	(*Left)->setPosition(winSize.width / 2, winSize.height * 1.5);
 	//(*Left)->setScaleX(winSize.width / (*Left)->getContentSize().width);
 	//(*Left)->setScaleY(winSize.height / (*Left)->getContentSize().height);
 
 	/*
-	물리엔진 테스트
+		왼쪽벽 물리엔진
 	*/
 	char jsonPath[100] = { 0, };
 	sprintf(jsonPath, "wall/left/%d.json", pattern);
@@ -101,12 +100,12 @@ void BackgroundLayer::CreateWall(Sprite ** Left, Sprite ** Right)
 
 	//오른쪽 벽 설정
 	if (pattern != 1) {
-		SpriteFrameCache::getInstance()->addSpriteFrame(Sprite::create(RightPath)->getDisplayFrame(), "right");
-		*Right = Sprite::createWithSpriteFrameName("right");
+		*Right = Sprite::createWithSpriteFrameName(RightPath);
 		(*Right)->setPosition(winSize.width / 2, winSize.height * 1.5);
 		//(*Right)->setScaleX(winSize.width / (*Right)->getContentSize().width);
 		//(*Right)->setScaleY(winSize.height / (*Right)->getContentSize().height);
 
+		char jsonPath[100] = { 0, };
 		sprintf(jsonPath, "wall/right/%d.json", pattern);
 		MyBodyParser::getInstance()->parseJsonFile(jsonPath);
 		auto body = MyBodyParser::getInstance()->bodyFormJson((*Right), "Name");
@@ -119,7 +118,6 @@ void BackgroundLayer::CreateWall(Sprite ** Left, Sprite ** Right)
 			(*Right)->setPhysicsBody(body);
 		}
 	}
-
 
 	LastPattern = pattern;
 }

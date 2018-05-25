@@ -65,6 +65,12 @@ bool AppDelegate::applicationDidFinishLaunching() {
 #endif
         director->setOpenGLView(glview);
     }
+	
+	/*
+		plist 리소스 불러오기
+	*/
+	auto spritecache = SpriteFrameCache::getInstance();
+	spritecache->addSpriteFramesWithFile("wall/wall.plist");
 
 	glview->setDesignResolutionSize(1080, 1920, ResolutionPolicy::EXACT_FIT);
 	director->setContentScaleFactor(1.0);

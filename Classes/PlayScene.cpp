@@ -9,7 +9,7 @@ cocos2d::Scene * PlayScene::createScene()
 	//물리엔진 씬 추가
 	auto scene = Scene::createWithPhysics();
 	scene->getPhysicsWorld()->setGravity(Vec2(0.0f, 0.0f));
-	//scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
 	//물리엔진 레이어 추가
 	auto layer = PlayScene::create();
@@ -23,19 +23,13 @@ bool PlayScene::init()
 {
 	if (!Scene::init())
 		return false;
-
-	auto scene = Director::getInstance()->getRunningScene();
-	auto world = this->getPhysicsWorld();
-
-	
+		
 	bgLayer = BackgroundLayer::create();
-	bgLayer->setPhyWorld(world);
 	this->addChild(bgLayer);
 
 	CharacterLayer = PlayLayer::create();
-	CharacterLayer->setPhyWorld(world);
-	this->addChild(CharacterLayer);
-	
+	this->addChild(CharacterLayer);	
+
 	/*
 		물리엔진 충돌
 	*/
