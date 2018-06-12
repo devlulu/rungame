@@ -10,12 +10,12 @@ bool BackgroundLayer::init()
 	winSize = Director::getInstance()->getVisibleSize();
 	/*DownSpeed = winSize.height * 0.015;
 	BlockTimer = DownSpeed * 0.39;*/
-	DownSpeed = 13.0;
-	BlockTimer = 5.0f;
+	DownSpeed = 8.0;
+	BlockTimer = 4.0f;
 	LastPattern = 1;
-
+	
 	initBackground();
-	initWallPattern();
+	//initWallPattern();
 	this->schedule(schedule_selector(BackgroundLayer::UpdateWall), BlockTimer);
 
 	return true;
@@ -29,31 +29,49 @@ void BackgroundLayer::UpdateWall(float dt)
 	Sprite *LeftWall = NULL;
 	Sprite *RightWall = NULL;
 
-	//벽 생성(+패턴검사)
-	CreateWall(&LeftWall, &RightWall);
+	char wallPath[100] = { 0, };
+	int n = 0;
+
+	n = rand() % 8 + 1;
+	sprintf(wallPath, "test/pattern%d.png", n);	
+	Sprite *wall = Sprite::create(wallPath);
+	wall->setPosition(Point(winSize.width / 2, winSize.height * 1.5));
+	this->addChild(wall);
+
+	auto action1 = MoveTo::create(13.0, Point(winSize.width / 2, -winSize.height * 1.5));
+	auto action2 = RemoveSelf::create();
+	auto action3 = Sequence::create(action1, action2, nullptr);
+	wall->runAction(action3);
 
 	/*
-	왼쪽 벽 설정
+		벽생성
 	*/
-	this->addChild(LeftWall);
-	//왼쪽 벽 액션
-	auto LeftAction1 = MoveTo::create(DownSpeed, Point(winSize.width / 2, -winSize.height));
-	auto LeftAction2 = RemoveSelf::create();
-	auto LeftAction3 = Sequence::create(LeftAction1, LeftAction2, nullptr);
-	LeftWall->runAction(LeftAction3);
 
-	/*
-	오른쪽 벽 설정
-	*/
-	if (RightWall != NULL) {
-		this->addChild(RightWall);
+	////벽 생성(+패턴검사)
+	//CreateWall(&LeftWall, &RightWall);
 
-		//오른쪽 벽 액션
-		auto RightAction1 = MoveTo::create(DownSpeed, Point(winSize.width / 2, -winSize.height));
-		auto RightAction2 = RemoveSelf::create();
-		auto RightAction3 = Sequence::create(RightAction1, RightAction2, nullptr);
-		RightWall->runAction(RightAction3);
-	}
+	///*
+	//왼쪽 벽 설정
+	//*/
+	//this->addChild(LeftWall);
+	////왼쪽 벽 액션
+	//auto LeftAction1 = MoveTo::create(DownSpeed, Point(winSize.width / 2, -winSize.height));
+	//auto LeftAction2 = RemoveSelf::create();
+	//auto LeftAction3 = Sequence::create(LeftAction1, LeftAction2, nullptr);
+	//LeftWall->runAction(LeftAction3);
+
+	///*
+	//오른쪽 벽 설정
+	//*/
+	//if (RightWall != NULL) {
+	//	this->addChild(RightWall);
+
+	//	//오른쪽 벽 액션
+	//	auto RightAction1 = MoveTo::create(DownSpeed, Point(winSize.width / 2, -winSize.height));
+	//	auto RightAction2 = RemoveSelf::create();
+	//	auto RightAction3 = Sequence::create(RightAction1, RightAction2, nullptr);
+	//	RightWall->runAction(RightAction3);
+	//}
 }
 
 /*
@@ -191,36 +209,40 @@ void BackgroundLayer::initWallPattern()
 */
 void BackgroundLayer::initBackground()
 {
-	//배경 -> 고정
-	SpriteFrameCache::getInstance()->addSpriteFrame(Sprite::create("background/bg.png")->getDisplayFrame(), "bg"); 
-	auto bg = Sprite::createWithSpriteFrameName("bg");
+	////배경 -> 고정
+	//SpriteFrameCache::getInstance()->addSpriteFrame(Sprite::create("background/bg.png")->getDisplayFrame(), "bg"); 
+	//auto bg = Sprite::createWithSpriteFrameName("bg");
+	//bg->setAnchorPoint(Point::ZERO);
+	//this->addChild(bg);
+
+	//auto node = ParallaxNode::create();
+	//this->addChild(node);
+
+	//auto action_1 = MoveBy::create(20.0f, Point(0, -1920));
+	//auto action_2 = Place::create(Point::ZERO);
+	//auto action_3 = Sequence::create(action_1, action_2, NULL);
+	//auto action = RepeatForever::create(action_3);
+	//node->runAction(action);
+
+	//// 눈꽃 ? 별인가? -> 패럴러스 노드로 움직임
+	//auto bg_1 = Sprite::create("background/star.png");
+	//bg_1->setAnchorPoint(Point::ZERO);
+	//node->addChild(bg_1, 0, Point(0, 1), Point::ZERO);
+
+	///*auto bg_2 = Sprite::create("star.png", Rect(0,0,1080,1920));
+	//bg_2->setAnchorPoint(Point::ZERO);
+	//node->addChild(bg_2, 0, Point(0, 1), Point(0, 1920));*/
+
+	auto bg = Sprite::create("test/BG.png");
 	bg->setAnchorPoint(Point::ZERO);
 	this->addChild(bg);
 
-	auto node = ParallaxNode::create();
-	this->addChild(node);
-
-	auto action_1 = MoveBy::create(20.0f, Point(0, -1920));
-	auto action_2 = Place::create(Point::ZERO);
-	auto action_3 = Sequence::create(action_1, action_2, NULL);
-	auto action = RepeatForever::create(action_3);
-	node->runAction(action);
-
-	// 눈꽃 ? 별인가? -> 패럴러스 노드로 움직임
-	auto bg_1 = Sprite::create("background/star.png");
-	bg_1->setAnchorPoint(Point::ZERO);
-	node->addChild(bg_1, 0, Point(0, 1), Point::ZERO);
-
-	/*auto bg_2 = Sprite::create("star.png", Rect(0,0,1080,1920));
-	bg_2->setAnchorPoint(Point::ZERO);
-	node->addChild(bg_2, 0, Point(0, 1), Point(0, 1920));*/
-
 	//벽 추가
-	intersectWallLeft = Sprite::create("wall/intersectWallLeft.png");
+	/*intersectWallLeft = Sprite::create("wall/intersectWallLeft.png");
 	intersectWallLeft->setPosition(Vec2(-10, winSize.height / 2));
 	this->addChild(intersectWallLeft);
 
 	intersectWallRight = Sprite::create("wall/intersectWallRight.png");
 	intersectWallRight->setPosition(Vec2(winSize.width + 10, winSize.height / 2));
-	this->addChild(intersectWallRight);
+	this->addChild(intersectWallRight);*/
 }

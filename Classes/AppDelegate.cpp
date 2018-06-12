@@ -1,5 +1,5 @@
 #include "AppDelegate.h"
-#include "PlayScene.h"
+#include "LoadingScene.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
@@ -18,7 +18,7 @@ using namespace CocosDenshion;
 
 USING_NS_CC;
 
-static cocos2d::Size designResolutionSize = cocos2d::Size(1080,	1920);
+static cocos2d::Size designResolutionSize = cocos2d::Size(720,	1280);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(320, 480);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(768, 1024);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(1536, 2048);
@@ -59,20 +59,20 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto glview = director->getOpenGLView();
     if(!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-        glview = GLViewImpl::createWithRect("cocos", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+        glview = GLViewImpl::createWithRect("test180602", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 #else
-        glview = GLViewImpl::create("cocos");
+        glview = GLViewImpl::create("test180602");
 #endif
         director->setOpenGLView(glview);
     }
-	
+
 	/*
-		plist 리소스 불러오기
+	plist 리소스 불러오기
 	*/
 	auto spritecache = SpriteFrameCache::getInstance();
 	spritecache->addSpriteFramesWithFile("wall/wall.plist");
 
-	glview->setDesignResolutionSize(1080, 1920, ResolutionPolicy::EXACT_FIT);
+	glview->setDesignResolutionSize(720, 1280, ResolutionPolicy::EXACT_FIT);
 	director->setContentScaleFactor(1.0);
 
     // turn on display FPS
@@ -84,7 +84,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     register_all_packages();
 
     // create a scene. it's an autorelease object
-    auto scene = PlayScene::createScene();
+    auto scene = LoadingScene::create();
 
     // run
     director->runWithScene(scene);

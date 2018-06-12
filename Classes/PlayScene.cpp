@@ -9,7 +9,7 @@ cocos2d::Scene * PlayScene::createScene()
 	//물리엔진 씬 추가
 	auto scene = Scene::createWithPhysics();
 	scene->getPhysicsWorld()->setGravity(Vec2(0.0f, 0.0f));
-	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+	//scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
 	//물리엔진 레이어 추가
 	auto layer = PlayScene::create();
@@ -38,7 +38,7 @@ bool PlayScene::init()
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
 	//scheduleUpdate() 메소드를 사용하여 Update() 메소드를 호출.
-	this->scheduleUpdate();
+	//this->scheduleUpdate();
 
 	return true;	
 }

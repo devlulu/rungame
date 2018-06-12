@@ -7,7 +7,7 @@ USING_NS_CC;
 
 #pragma once
 #define TAG_SPRITE_PLAYER		1000
-#define MOVESPEED	3
+#define MOVESPEED	2
 class PlayLayer : public cocos2d::Layer
 {
 public:
@@ -17,9 +17,8 @@ public:
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	Sprite* Player;
-
-	PhysicsWorld* m_world;
-	void setPhyWorld(PhysicsWorld* world) { m_world = world; }
+	/*bool Count = true;*/
+	int Count = 0;
 
 private:
 	virtual bool init() override;
@@ -29,7 +28,6 @@ private:
 	virtual void onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event);
 	virtual void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
 	virtual void onTouchCancelled(cocos2d::Touch* touch, cocos2d::Event* event);
-
 
 	Action* currentAction = nullptr;
 

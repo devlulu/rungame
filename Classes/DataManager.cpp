@@ -10,10 +10,3 @@ DataManager* DataManager::getInstance()
 	return mInstance;
 }
 
-void DataManager::setScore(int n) {
-	score = n;
-}
-
-int DataManager::getScore() {
-	return score;
-}
